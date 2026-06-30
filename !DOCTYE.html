@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عيد ميلاد سعيد يا جنى 💖</title>
+    <!-- استيراد خطوط عربية مميزة من جوجل -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ffb3c1;
+            --dark-pink: #c9184a;
+            --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+            --text-color: #590d22;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* شاشة المفاجاة الاولى */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff758f 0%, #ff4d6d 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s;
+            color: white;
+            text-align: center;
+        }
+
+        .gift-box {
+            font-size: 80px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            transition: transform 0.3s;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.2);
+        }
+
+        .intro-text {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            padding: 0 20px;
+        }
+
+        /* تاثيرات تساقط القلوب */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* المحتوى الرئيسي للموقع */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.5s ease 0.5s;
+        }
+
+        .main-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--dark-pink);
+            margin-bottom: 10px;
+            font-weight: 800;
+            animation: pulse 2s infinite;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #800f2f;
+            margin-bottom: 40px;
+        }
+
+        /* بطاقة الرسالة الكبرى */
+        .card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px 30px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .love-letter {
+            font-size: 1.35rem;
+            line-height: 2.2;
+            color: #4a0516;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: var(--dark-pink);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(201, 24, 74, 0.3);
+        }
+
+        /* فوتر الصفحة */
+        footer {
+            margin-top: 40px;
+            font-size: 1.1rem;
+            color: var(--dark-pink);
+            font-weight: bold;
+        }
+
+        /* مكان وضع مشغل اليوتيوب المخفي */
+        #youtube-audio-container {
+            display: none;
+        }
+
+        /* حركات الانيميشن */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2.2rem; }
+            .love-letter { font-size: 1.15rem; line-height: 2; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشاشة الترحيبية (المفاجاة) -->
+    <div id="intro-overlay" onclick="revealSurprise()">
+        <div class="gift-box">🎁</div>
+        <div class="intro-text">نونتي... فيه حاجة حلوة تستناك، اضغطي على الهدية! ✨</div>
+    </div>
+
+    <!-- تاثيرات الخلفية المتحركة -->
+    <canvas id="heartsCanvas"></canvas>
+
+    <!-- حاوية اليوتيوب المخفية لتشغيل الصوت -->
+    <div id="youtube-audio-container"></div>
+
+    <!-- المحتوى الرئيسي للموقع -->
+    <div class="main-container" id="mainContent">
+        <header>
+            <h1>كل عام وانتي بخير يا نونتي 💖</h1>
+            <p>اجمل من كبرت اليوم، كل دقيقة وانتي لقلبي قريبة وحيل غالية.</p>
+        </header>
+
+        <!-- بطاقة الرسالة العاطفية الطويلة -->
+        <div class="card">
+            <div class="date-badge">1 يوليو 2026</div>
+            <p class="love-letter">
+                لحبيبتي وعمري وروحي نونتي، <br><br>
+                بمناسبة يوم ميلادك اليوم، حبيت اكون اول شخص بالدنيا يقول لك كل عام وانتي بالف خير يا كل دنيتي. انتي مو بس حبيبتي، انتي الروح الي اتنفسها، والضحكة الي ترد لي عافيتي، والنعمة الي كل يوم اشكر ربي عليها.<br><br>
+                العمر كله لك يا رب بالصحة والسعادة وراحة البال، ويا عسى عيونك الحلوة ما تشوف الا الفرح والخير، وجعل كل ايامك الجاية تكون مليانة نجاحات وحب وضحكات من قلبك.<br><br>
+                ابي اذكرك اليوم وكل يوم انك اجمل حاجة صارت لي بالدنيا، وان قلبي ما حب ولا راح يحب احد كثر ما حبك انتي. كل سنة وانتي معاي، وكل سنة وانا احبك اكثر من السنة الي قبلها يا دنيتي وعمري كله. يوم ميلاد سعيد يا قلبي وروحي ودنيتي كلها.
+            </p>
+            <div style="font-size: 1.5rem;">❤️🎂👑</div>
+        </div>
+
+        <footer>
+            <p>صنع بكل حب لك انتي وبس ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        // دالة كشف المفاجاة وتشغيل اغنية اليوتيوب تلقائيا عند الضغط
+        function revealSurprise() {
+            const overlay = document.getElementById('intro-overlay');
+            const mainContent = document.getElementById('mainContent');
+            const ytContainer = document.getElementById('youtube-audio-container');
+            
+            overlay.style.opacity = '0';
+            overlay.style.visibility = 'hidden';
+            
+            mainContent.classList.add('show');
+            
+            // تم تصحيح الكود هنا بوضع معرف الفيديو فقط داخل علامات تنصيص
+            const videoId = "nAw2ooeubSQ"; 
+            
+            ytContainer.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}" frameborder="0" allow="autoplay"></iframe>`;
+        }
+
+        // كود توليد تاثير القلوب والبريق في الخلفية
+        const canvas = document.getElementById('heartsCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 15 + 5;
+                this.speedY = Math.random() * 1.5 + 0.5;
+                this.speedX = Math.sin(Math.random() * 2) * 0.5;
+                this.opacity = Math.random() * 0.6 + 0.4;
+                this.type = Math.random() > 0.4 ? 'heart' : 'star';
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if (this.opacity > 0.01) this.opacity -= 0.002;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ff4d6d';
+                
+                if (this.type === 'heart') {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.bezierCurveTo(this.x - this.size/2, this.y - this.size/2, this.x - this.size, this.y + this.size/3, this.x, this.y + this.size);
+                    ctx.bezierCurveTo(this.x + this.size, this.y + this.size/3, this.x + this.size/2, this.y - this.size/2, this.x, this.y);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = '#ffb3c1';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size/3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            if (particles.length < 70) {
+                particles.push(new Particle());
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                if (particles[i].y < -20 || particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            initParticles();
+            handleParticles();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
